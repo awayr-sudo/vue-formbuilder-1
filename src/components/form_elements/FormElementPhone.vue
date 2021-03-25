@@ -3,18 +3,24 @@
     :label="currentField.label"
     :label-width="currentField.labelWidth + 'px'"
   >
-    <el-date-picker v-model="date" type="date" placeholder="Pick a day">
-    </el-date-picker>
+    <el-input
+      type="text"
+      v-maska="['(###) ##-##-##', '(###) ###-####']"
+      v-model="phone"
+    >
+    </el-input>
   </el-form-item>
 </template>
 
 <script>
+import { maska } from "maska";
 export default {
-  name: "DatePicker",
+  name: "Phone",
+  directives: { maska },
   props: ["currentField"],
   data() {
     return {
-      date: "",
+      phone: "",
     };
   },
 };

@@ -3,12 +3,14 @@
     :label="currentField.label"
     :label-width="currentField.labelWidth + 'px'"
   >
-    <el-input-number
+    <el-input
+      type="text"
+      v-maska="'#####'"
       v-model="number"
-      controls-position="right"
-      v-bind="attributesBinding"
+      maxlength="5"
+      show-word-limit
     >
-    </el-input-number>
+    </el-input>
   </el-form-item>
 </template>
 
@@ -18,7 +20,7 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      number: 0,
+      number: "",
     };
   },
   computed: {

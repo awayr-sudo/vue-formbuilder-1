@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "di-vue-mask": "^1.1.0",
     "element-ui": "^2.8.2",
+    "maska": "^1.4.1",
     "vue": "^2.6.10",
     "vue-lodash": "^2.0.2",
     "vue-router": "^3.0.3",

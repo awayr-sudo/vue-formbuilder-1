@@ -1,34 +1,46 @@
 <template>
-<div class="main__wrapper">
-  <el-container>
-    <el-main :style="cssProps">
-      <el-form>
-        <el-row>
-          <div class="wrapper--forms">
-            <el-col v-for="(form, index) in forms" :key="index" :span="form.span" v-bind="form" class="form__group">
-              <!-- <label class="form__label" v-model="form.label" v-show="form.hasOwnProperty('label')">{{ form.label }}</label> -->
-              <component :is="form.fieldType" :currentField="form" class="form__field">
-              </component>
-              <!-- <small class="form__helpblock" v-model="form.helpBlockText" v-show="form.isHelpBlockVisible">
-                {{ form.helpBlockText }}
-              </small> -->
-            </el-col>
-          </div>
-        </el-row>
-      </el-form>
-    </el-main>
-  </el-container>
-</div>
+  <div class="main__wrapper">
+    <el-container>
+      <el-main :style="cssProps">
+        <el-form>
+          <el-row>
+            <div class="wrapper--forms">
+              <el-col
+                v-for="(form, index) in forms"
+                :key="index"
+                :span="form.span"
+                v-bind="form"
+                class="form__group"
+              >
+                <!-- <label class="form__label" v-model="form.label" v-show="form.hasOwnProperty('label')">{{ form.label }}</label> -->
+                <component
+                  :is="form.fieldType"
+                  :currentField="form"
+                  class="form__field"
+                >
+                </component>
+                <small
+                  class="form__helpblock"
+                  v-model="form.helpBlockText"
+                  v-show="form.isHelpBlockVisible"
+                >
+                  {{ form.helpBlockText }}
+                </small>
+              </el-col>
+            </div>
+          </el-row>
+        </el-form>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
-import {
-  FormBuilder
-} from '@/components/form_elements/formbuilder'
+import { FormBuilder } from "@/components/form_elements/formbuilder";
 
 export default {
-  name: 'Publish',
-  store: ['forms', 'themingVars'],
+  name: "Publish",
+  store: ["forms", "themingVars"],
   components: FormBuilder.$options.components,
   computed: {
     cssProps() {
@@ -45,16 +57,16 @@ export default {
             suffix = "";
 
           // Add px to the value if the default value contain 'px'
-          if (_.includes(newV, 'size')) suffix = "px"
-          else if (_.includes(newV, 'margin')) suffix = "px"
-          else if (_.includes(newV, 'radius')) suffix = "px"
+          if (_.includes(newV, "size")) suffix = "px";
+          else if (_.includes(newV, "margin")) suffix = "px";
+          else if (_.includes(newV, "radius")) suffix = "px";
 
           result[newV] = themingVars[v] + suffix;
         }
       }
 
       return result;
-    }
-  }
-}
+    },
+  },
+};
 </script>

@@ -1,46 +1,44 @@
-import Vue from 'vue'
-
+import Vue from "vue";
 
 // ================
 // Use Element UI
 // ----------------
-import Element from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css';
-import locale from 'element-ui/lib/locale/lang/en' // Default lang is Chinese
-Vue.use(Element, { locale })
-import './assets/scss/main.scss'
+import Element from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+import locale from "element-ui/lib/locale/lang/en"; // Default lang is Chinese
+Vue.use(Element, { locale });
+import "./assets/scss/main.scss";
 
-import App from './App'
-
+import App from "./App";
 
 // ================
 // Lodash
 // ----------------
-import VueLodash from 'vue-lodash'
-Vue.use(VueLodash)
+import VueLodash from "vue-lodash";
+Vue.use(VueLodash);
 
 // ================
 // Use Vue Router
 // ----------------
-import router from './router'
-
+import router from "./router";
 
 // ================
 // Vue-stash aka simple vuex alternative
 // ----------------
-import VueStash from 'vue-stash'
-import store from './store'
-Vue.use(VueStash)
+import VueStash from "vue-stash";
+import store from "./store";
+import Maska from "maska";
 
+Vue.use(VueStash);
+Vue.use(Maska);
 
-
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 var vm = new Vue({
-  el: '#app',
+  el: "#app",
   router,
   data: { store },
-  render: h => h(App)
-}).$mount('#app')
+  render: (h) => h(App),
+}).$mount("#app");
 
 export default vm;
