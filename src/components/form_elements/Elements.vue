@@ -20,6 +20,27 @@
         </el-col>
       </draggable>
     </el-row>
+    <el-row :gutter="10" class="row-bg">
+      <draggable
+        :list="fields"
+        :clone="clone"
+        class="dragArea"
+        :group="{ name: 'formbuilder', pull: 'clone', put: false }"
+        :sort="false"
+      >
+        <el-col :span="24">
+          <el-switch
+            style="display: block"
+            v-model="showGranzaLogo"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-text="Show the Granza logo at the bottom of your form."
+            @change="handleGranzaLogo"
+          >
+          </el-switch>
+        </el-col>
+      </draggable>
+    </el-row>
   </div>
 </template>
 
@@ -29,7 +50,7 @@ import draggable from "vuedraggable";
 
 export default {
   name: "Elements",
-  store: ["forms"],
+  store: ["forms", "showGranzaLogo"],
   components: {
     draggable,
   },
@@ -40,6 +61,21 @@ export default {
     };
   },
   methods: {
+    handleGranzaLogo(done) {
+      if (!done) {
+        this.$confirm(
+          "The Granza logo is an important feature of Granza’s viral networking technology. It is one of several key ways your business will expand automatically. Are you sure? "
+        )
+          .then((_) => {
+            console.log(done, "_", _);
+            this.showGranzaLogo = done;
+          })
+          .catch((_) => {
+            console.log(done, "!_", _);
+            this.showGranzaLogo = !done;
+          });
+      }
+    },
     clone(field) {
       field.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
       return _.cloneDeep(field);

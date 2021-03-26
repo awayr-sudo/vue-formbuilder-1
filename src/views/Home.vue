@@ -3,7 +3,7 @@
     <el-container>
       <el-main>
         <div class="wrapper--forms">
-          <el-form>
+          <el-form ref="ruleForm">
             <el-row>
               <draggable
                 :list="forms"
@@ -53,18 +53,25 @@
                         size="mini"
                         icon="el-icon-plus"
                         @click="cloneElement(index, form)"
-                        v-show="!form.isUnique"
+                        v-show="!form.isUnique || !form.isLocked"
                       ></el-button>
                       <el-button
                         size="mini"
                         icon="el-icon-delete"
                         @click="deleteElement(index)"
+                        v-show="!form.isLocked"
                       ></el-button>
                     </el-button-group>
                   </div>
                 </el-col>
                 <!-- </div> -->
-              </draggable>
+              </draggable> </el-row
+            >{{ showGranzaLogo }}
+            <el-row :gutter="20" v-show="showGranzaLogo">
+              <el-col :span="12" :offset="8"
+                ><div class="grid-content bg-purple" justify="center">
+                  <img style=" height: 50px" src="@/assets/logo.png" /></div
+              ></el-col>
             </el-row>
           </el-form>
         </div>
@@ -95,7 +102,7 @@ import { FormBuilder } from "@/components/form_elements/formbuilder";
 
 export default {
   name: "Home",
-  store: ["forms", "activeForm", "activeTabForFields"],
+  store: ["forms", "activeForm", "activeTabForFields", "showGranzaLogo"],
   data() {
     return {
       sortElementOptions: FormBuilder.$data.sortElementOptions,
@@ -104,9 +111,125 @@ export default {
   mounted() {
     console.log("form ->", this.forms);
     console.log("activeform ->", this.activeForm);
+    this.forms = [
+      {
+        fieldType: "TextInput",
+        label: "First Name",
+        text: "Text",
+        group: "form",
+        isRequired: true,
+        isHelpBlockVisible: false,
+        isPlaceholderVisible: true,
+        span: 24,
+        labelWidth: 140,
+        advancedOptions: true,
+        showPassword: false,
+        disabled: false,
+        clearable: false,
+        prepend: "",
+        append: "",
+        maxlength: 10,
+        showWordLimit: false,
+        mergeTag: "FNAME",
+        isLocked: true,
+        isUnique: true,
+      },
+      {
+        fieldType: "TextInput",
+        label: "Last Name",
+        text: "Text",
+        group: "form",
+        isRequired: true,
+        isHelpBlockVisible: false,
+        isPlaceholderVisible: true,
+        span: 24,
+        labelWidth: 140,
+        advancedOptions: true,
+        showPassword: false,
+        disabled: false,
+        clearable: false,
+        prepend: "",
+        append: "",
+        maxlength: 10,
+        showWordLimit: false,
+        mergeTag: "MMERGE3881",
+        isLocked: true,
+        isUnique: true,
+      },
+      {
+        fieldType: "TextInput",
+        label: "Email",
+        text: "Text",
+        group: "form",
+        isRequired: true,
+        isHelpBlockVisible: false,
+        isPlaceholderVisible: true,
+        labelWidth: 140,
+        mergeTag: "EMAIL",
+        isLocked: true,
+        isUnique: true,
+      },
+    ];
   },
   components: FormBuilder.$options.components,
+  watch: {
+    forms: {
+      handler: function(elems, oldVal) {
+        // grouping the items...
+        var grouped = _.groupBy(elems, function(elem) {
+          return elem.isLocked ? "locked" : "unlocked";
+        });
+        console.log(grouped);
+        // acting on grouped data if any unlocked item available...
+        if (grouped.hasOwnProperty("unlocked")) {
+          grouped.locked.forEach((item, idx) => {
+            grouped.unlocked.forEach((unLockedItem, unLockedIndex) => {
+              if (item.mergeTag == unLockedItem.mergeTag) {
+                var oldVal = unLockedItem.mergeTag;
+                unLockedItem.mergeTag =
+                  unLockedItem.mergeTag +
+                  Math.floor(Math.random() * Math.floor(100));
+                unLockedItem.invalid = true;
+                unLockedItem.invalidMsg = "Duplicate Merge Tag";
+                console.log("error, Halt!");
+                var msg =
+                  "Merge Tag (" +
+                  oldVal +
+                  ") for " +
+                  unLockedItem.label +
+                  "  was already in used. New Merge Tag is:" +
+                  unLockedItem.mergeTag +
+                  ".";
+                this.warn(msg);
+
+                return true;
+              }
+            });
+          });
+
+          // console.log("invalid element", invalidElement);
+        }
+
+        // Return the object that changed
+        // var changed = grouped.unlocked.filter(function(p, idx) {
+        //   grouped.locked.forEach(lckItem, idx){}
+        // });
+        // console.log("element watcher", val, oldVal);
+        // Log it
+        // console.log("changed", changed);
+      },
+      deep: true,
+    },
+  },
   methods: {
+    warn(msg) {
+      this.$notify({
+        title: "Warning",
+        message: msg,
+        type: "warning",
+        duration: 0,
+      });
+    },
     deleteElement(index) {
       FormBuilder.deleteElement(index);
     },
@@ -116,6 +239,15 @@ export default {
       FormBuilder.cloneElement(index, form);
     },
     editElementProperties(form) {
+      this.$refs["ruleForm"].validate((valid) => {
+        console.log("validating.....");
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
       console.log("form ->", this.forms);
       FormBuilder.editElementProperties(form);
     },

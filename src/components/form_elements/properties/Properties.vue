@@ -7,7 +7,7 @@
       ref="fieldProperties"
     >
       <el-row>
-        <el-col :span="12">
+        <el-col :span="16">
           <el-form-item
             label="Label Name"
             v-show="activeForm.hasOwnProperty('label')"
@@ -17,24 +17,23 @@
             }}</el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item
-            label="Label Width - px"
-            v-show="activeForm.hasOwnProperty('label')"
+            label="Required field?"
+            v-show="activeForm.hasOwnProperty('isRequired')"
           >
-            <el-input-number
-              v-model="activeForm.labelWidth"
-              :min="30"
-              :max="1000"
-              controls-position="right"
-            ></el-input-number>
+            <el-switch v-model="activeForm.isRequired"></el-switch>
           </el-form-item>
         </el-col>
       </el-row>
       <el-form-item label="Merge Tag">
-        <el-input v-model="activeForm.mergeTag">{{
-          activeForm.mergeTag
-        }}</el-input>
+        <el-input
+          v-model="activeForm.mergeTag"
+          :disabled="
+            activeForm.hasOwnProperty('isLocked') && activeForm.isLocked
+          "
+          >{{ activeForm.mergeTag }}</el-input
+        >
       </el-form-item>
       <el-form-item
         label="Height - px"
@@ -68,30 +67,6 @@
           </el-col>
         </el-row>
       </el-form-item>
-
-      <el-row>
-        <el-col :span="12">
-          <el-form-item
-            label="Required field?"
-            v-show="activeForm.hasOwnProperty('isRequired')"
-          >
-            <el-switch v-model="activeForm.isRequired"></el-switch>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item
-            label="Layout - Max value is 24"
-            v-show="activeForm.hasOwnProperty('span')"
-          >
-            <el-input-number
-              v-model="activeForm.span"
-              :min="1"
-              :max="24"
-              controls-position="right"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-      </el-row>
 
       <el-form-item
         label="Button text"
@@ -129,6 +104,7 @@
           </el-col>
         </el-row>
       </el-form-item>
+
       <el-row>
         <el-col :span="12">
           <el-form-item
@@ -297,7 +273,7 @@
         }}</el-input>
       </el-form-item>
 
-      <el-button
+      <!-- <el-button
         v-show="activeForm.hasOwnProperty('advancedOptions')"
         size="mini"
         @click="advancedPropsVisible = true"
@@ -337,7 +313,7 @@
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="confirmForm">Confirm</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
     </el-form>
   </div>
 </template>

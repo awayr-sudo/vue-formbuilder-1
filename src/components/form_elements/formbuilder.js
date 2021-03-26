@@ -65,8 +65,8 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: true,
           isUnique: false,
-          span: 8,
-          labelWidth: 100,
+          span: 24,
+          labelWidth: 140,
           advancedOptions: true,
           showPassword: false,
           disabled: false,
@@ -281,7 +281,9 @@ export const FormBuilder = new Vue({
       var cloned = _.cloneDeep(form); // clone deep lodash
       vm.$store.forms.splice(index, 0, cloned);
     },
-
+    handleGranzaLogo(show) {
+      vm.$store.showGranzaLogo = show;
+    },
     editElementProperties(form) {
       vm.$store.activeForm = form;
       vm.$store.activeTabForFields = "properties";
