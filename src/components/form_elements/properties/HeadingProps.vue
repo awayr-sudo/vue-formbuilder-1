@@ -4,7 +4,7 @@
 <script>
 import { VueEditor } from "vue2-quill-editor";
 export default {
-  name: "HtmlAdvancedProp",
+  name: "HeadingProp",
   store: ["activeForm"],
   components: {
     VueEditor,

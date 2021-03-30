@@ -1,9 +1,16 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-container>
       <el-main>
         <div class="wrapper--forms">
           <el-form ref="ruleForm">
+            <el-input
+              v-show="false"
+              id="appPoint"
+              v-model="appPoint"
+            ></el-input>
+            <el-input v-show="false" id="listId" v-model="listId"></el-input>
+
             <el-row>
               <draggable
                 :list="forms"
@@ -22,10 +29,13 @@
                   class="form__group"
                   :class="{ 'is--active': form === activeForm }"
                 >
-                  <span class="form__selectedlabel">{{ form.fieldType }}</span>
+                  <span class="form__selectedlabel">{{
+                    form.fieldType != "Heading" ? form.fieldType : "Form Title"
+                  }}</span>
 
                   <div @click="editElementProperties(form)">
                     <!-- <label class="form__label" v-model="form.label" v-show="form.hasOwnProperty('label')">{{ form.label }}</label> -->
+
                     <component
                       :is="form.fieldType"
                       :currentField="form"
@@ -46,7 +56,20 @@
                       size="mini"
                       icon="el-icon-rank"
                       class="form__actionitem--move"
+                      v-show="form.fieldType != 'Heading'"
                     ></el-button>
+                    <el-button
+                      v-show="form.fieldType == 'Heading'"
+                      type="primary"
+                      class="form__actionitem--edit"
+                      round
+                      size="mini"
+                      @click="
+                        editElementProperties(form);
+                        headingPropsVisible = true;
+                      "
+                      >Edit</el-button
+                    >
 
                     <el-button-group class="form__actionlist">
                       <el-button
@@ -65,13 +88,17 @@
                   </div>
                 </el-col>
                 <!-- </div> -->
-              </draggable> </el-row
-            >{{ showGranzaLogo }}
+              </draggable>
+            </el-row>
             <el-row :gutter="20" v-show="showGranzaLogo">
-              <el-col :span="12" :offset="8"
-                ><div class="grid-content bg-purple" justify="center">
-                  <img style=" height: 50px" src="@/assets/logo.png" /></div
-              ></el-col>
+              <el-col :span="24">
+                <div class="grid-content btn-submit" justify="center">
+                  <el-button type="primary" round>Submit</el-button>
+                </div>
+                <div class="grid-content granza-log" justify="center">
+                  <img style=" height: 50px" src="@/assets/logo.png" />
+                </div>
+              </el-col>
             </el-row>
           </el-form>
         </div>
@@ -82,10 +109,17 @@
           <el-tab-pane name="elements" label="Elements">
             <elements />
           </el-tab-pane>
-
-          <el-tab-pane name="properties" label="Properties">
+          <el-tab-pane
+            name="properties"
+            label="Properties"
+            :disabled="
+              Object.keys($store.activeForm).length <= 0 ||
+                activeForm.fieldType == 'Heading'
+            "
+          >
             <properties
               v-show="Object.keys($store.activeForm).length > 0"
+              ref="properties"
             ></properties>
           </el-tab-pane>
         </el-tabs>
@@ -93,88 +127,87 @@
         <!--{{ $store.activeForm }}-->
       </el-aside>
     </el-container>
-    <pre>{{ forms }}</pre>
+    <!-- <el-dialog
+      :close-on-click-modal="false"
+      title="Edit Your Form Title"
+      :visible.sync="headingPropsVisible"
+    >
+      <el-form ref="OptionsForm">
+        <heading-props
+          v-if="activeForm.fieldType === 'Heading'"
+        ></heading-props>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="headingPropsVisible = false"
+          >Save & Close</el-button
+        >
+      </div>
+    </el-dialog> -->
+    <!-- <pre>{{ forms }}</pre> -->
   </div>
 </template>
 
 <script>
 import { FormBuilder } from "@/components/form_elements/formbuilder";
-
+import HeadingProps from "../components/form_elements/properties/HeadingProps.vue";
+import _ from "lodash";
+import axios from "axios";
+import Vue from "vue";
 export default {
   name: "Home",
-  store: ["forms", "activeForm", "activeTabForFields", "showGranzaLogo"],
+  store: [
+    "forms",
+    "activeForm",
+    "activeTabForFields",
+    "showGranzaLogo",
+    "listId",
+  ],
   data() {
     return {
+      loading: false,
       sortElementOptions: FormBuilder.$data.sortElementOptions,
+      headingPropsVisible: false,
+      appPoint: "",
     };
   },
   mounted() {
     console.log("form ->", this.forms);
     console.log("activeform ->", this.activeForm);
-    this.forms = [
-      {
-        fieldType: "TextInput",
-        label: "First Name",
-        text: "Text",
-        group: "form",
-        isRequired: true,
-        isHelpBlockVisible: false,
-        isPlaceholderVisible: true,
-        span: 24,
-        labelWidth: 140,
-        advancedOptions: true,
-        showPassword: false,
-        disabled: false,
-        clearable: false,
-        prepend: "",
-        append: "",
-        maxlength: 10,
-        showWordLimit: false,
-        mergeTag: "FNAME",
-        isLocked: true,
-        isUnique: true,
-      },
-      {
-        fieldType: "TextInput",
-        label: "Last Name",
-        text: "Text",
-        group: "form",
-        isRequired: true,
-        isHelpBlockVisible: false,
-        isPlaceholderVisible: true,
-        span: 24,
-        labelWidth: 140,
-        advancedOptions: true,
-        showPassword: false,
-        disabled: false,
-        clearable: false,
-        prepend: "",
-        append: "",
-        maxlength: 10,
-        showWordLimit: false,
-        mergeTag: "MMERGE3881",
-        isLocked: true,
-        isUnique: true,
-      },
-      {
-        fieldType: "TextInput",
-        label: "Email",
-        text: "Text",
-        group: "form",
-        isRequired: true,
-        isHelpBlockVisible: false,
-        isPlaceholderVisible: true,
-        labelWidth: 140,
-        mergeTag: "EMAIL",
-        isLocked: true,
-        isUnique: true,
-      },
-    ];
+    console.log("my children", this.$);
+
+    this.forms = [];
   },
-  components: FormBuilder.$options.components,
+  components: { ...FormBuilder.$options.components, HeadingProps },
+
   watch: {
+    appPoint: function(val) {
+      Vue.prototype.apiEndpoint = val;
+    },
+    listId: function(val) {
+      if (Vue.prototype.apiEndpoint == "") return;
+      this.listId = val;
+      this.loading = true;
+      axios
+        .get(Vue.prototype.apiEndpoint + `form-fields?id=` + val)
+        .then((data) => {
+          // JSON responses are automatically parsed.
+          var info = JSON.parse(JSON.stringify(data));
+          console.log("forms", info.data);
+          this.forms = info.data;
+          this.loading = false;
+          // this.forms = [];
+          // info.data.forEach((item) => {
+          //   this.forms.push(JSON.parse(item));
+          // });
+          // this.forms = JSON.stringify(data);
+        })
+        .catch((e) => {
+          console.log(e);
+          this.loading = false;
+        });
+    },
     forms: {
-      handler: function(elems, oldVal) {
+      handler: function(elems /*, oldVal*/) {
         // grouping the items...
         var grouped = _.groupBy(elems, function(elem) {
           return elem.isLocked ? "locked" : "unlocked";
@@ -182,8 +215,8 @@ export default {
         console.log(grouped);
         // acting on grouped data if any unlocked item available...
         if (grouped.hasOwnProperty("unlocked")) {
-          grouped.locked.forEach((item, idx) => {
-            grouped.unlocked.forEach((unLockedItem, unLockedIndex) => {
+          grouped.locked.forEach((item) => {
+            grouped.unlocked.forEach((unLockedItem /*, unLockedIndex*/) => {
               if (item.mergeTag == unLockedItem.mergeTag) {
                 var oldVal = unLockedItem.mergeTag;
                 unLockedItem.mergeTag =
@@ -234,21 +267,23 @@ export default {
       FormBuilder.deleteElement(index);
     },
     cloneElement(index, form) {
-      console.log("good g");
       form.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
+      console.log("good g", form);
       FormBuilder.cloneElement(index, form);
     },
     editElementProperties(form) {
-      this.$refs["ruleForm"].validate((valid) => {
-        console.log("validating.....");
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-      console.log("form ->", this.forms);
+      // this.$refs["ruleForm"].validate((valid) => {
+      //   console.log("validating.....");
+      //   if (valid) {
+      //     alert("submit!");
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
+      // console.log("form ->", this.forms);
+      if (form.fieldType == "Heading")
+        this.$refs["properties"].headingPropsVisible = true;
       FormBuilder.editElementProperties(form);
     },
   },
@@ -277,6 +312,21 @@ export default {
   right: 15px;
 }
 
+.form__actionitem--edit {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  visibility: hidden;
+
+  &:active,
+  &:focus,
+  &:hover {
+    border-color: #21629a;
+    background: #ecf5ff;
+  }
+}
+
 .form__actionitem--move {
   position: absolute;
   right: -14px;
@@ -287,7 +337,7 @@ export default {
   &:active,
   &:focus,
   &:hover {
-    border-color: #409eff;
+    border-color: #21629a;
     background: #ecf5ff;
   }
 }
@@ -307,15 +357,18 @@ export default {
   position: relative;
 
   &:hover {
-    border-color: #409eff;
+    border-color: #21629a;
 
     .form__actionitem--move {
+      visibility: visible;
+    }
+    .form__actionitem--edit {
       visibility: visible;
     }
   }
 
   &.is--active {
-    border-color: #409eff;
+    border-color: #21629a;
     background: #ecf5ff;
 
     .form__actionlist {

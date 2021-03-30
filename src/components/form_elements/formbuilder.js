@@ -3,6 +3,7 @@ import Vue from "vue";
 import draggable from "vuedraggable";
 
 import TextInput from "@/components/form_elements/FormElementTextInput";
+import URL from "@/components/form_elements/FormElementURL";
 import LongTextInput from "@/components/form_elements/FormElementLongTextInput";
 import NumberInput from "@/components/form_elements/FormElementNumberInput";
 import SelectList from "@/components/form_elements/FormElementSelectList";
@@ -18,12 +19,14 @@ import Upload from "@/components/form_elements/FormElementUpload";
 import ElSwitch from "@/components/form_elements/FormElementSwitch";
 import TableComponent from "@/components/form_elements/FormElementTable";
 import HtmlComponent from "@/components/form_elements/FormElementHtml";
+import Heading from "@/components/form_elements/FormElementHeading";
 import Address from "@/components/form_elements/FormElementAddress";
 import Zipcode from "@/components/form_elements/FormElementZipcode";
 import Birthday from "@/components/form_elements/FormElementBirthday";
 import Phone from "@/components/form_elements/FormElementPhone";
 import Elements from "@/components/form_elements/Elements";
 import Properties from "@/components/form_elements/properties/Properties";
+import HeadingProps from "@/components/form_elements/properties/HeadingProps";
 
 import vm from "@/main";
 
@@ -32,7 +35,9 @@ export const FormBuilder = new Vue({
     Elements,
     Properties,
     draggable,
+    Heading,
     TextInput,
+    URL,
     LongTextInput,
     NumberInput,
     SelectList,
@@ -52,6 +57,7 @@ export const FormBuilder = new Vue({
     Zipcode,
     Birthday,
     Phone,
+    HeadingProps,
   },
   data() {
     return {
@@ -77,6 +83,18 @@ export const FormBuilder = new Vue({
           showWordLimit: false,
         },
         {
+          fieldType: "LongTextInput",
+          label: "Long Text",
+          text: "Long Text",
+          group: "form",
+          isRequired: false,
+          isHelpBlockVisible: false,
+          isPlaceholderVisible: true,
+          isUnique: false,
+          span: 24,
+          labelWidth: 100,
+        },
+        {
           fieldType: "NumberInput",
           label: "Number",
           text: "Number",
@@ -85,7 +103,7 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
+          span: 24,
           labelWidth: 100,
           advancedOptions: true,
           disabled: false,
@@ -105,7 +123,7 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
+          span: 24,
           labelWidth: 100,
           isFromUrl: false,
           dataUrl: "",
@@ -120,7 +138,6 @@ export const FormBuilder = new Vue({
             },
           ],
           advancedOptions: true,
-          dataUrl: "",
           labelField: "label",
           valueField: "value",
           disabled: false,
@@ -138,7 +155,6 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
           labelWidth: 100,
           isFromUrl: false,
           options: [
@@ -165,7 +181,6 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
           labelWidth: 100,
           isFromUrl: false,
           options: [
@@ -192,8 +207,6 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
-          labelWidth: 100,
         },
         {
           fieldType: "Birthday",
@@ -204,8 +217,6 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
-          labelWidth: 100,
         },
         {
           fieldType: "Address",
@@ -244,8 +255,16 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
-          span: 8,
-          labelWidth: 100,
+        },
+        {
+          fieldType: "URL",
+          label: "URL",
+          text: "URL",
+          group: "form",
+          isRequired: false,
+          isHelpBlockVisible: false,
+          isPlaceholderVisible: false,
+          isUnique: false,
         },
       ],
 
@@ -277,7 +296,7 @@ export const FormBuilder = new Vue({
     },
 
     cloneElement(index, form) {
-      console.log("gooooood");
+      console.log("gooooood", form);
       var cloned = _.cloneDeep(form); // clone deep lodash
       vm.$store.forms.splice(index, 0, cloned);
     },
@@ -286,6 +305,9 @@ export const FormBuilder = new Vue({
     },
     editElementProperties(form) {
       vm.$store.activeForm = form;
+      if (form.fieldType != "Heading")
+        vm.$store.activeTabForFields = "properties";
+      else vm.$store.activeTabForFields = "elements";
       vm.$store.activeTabForFields = "properties";
     },
   },

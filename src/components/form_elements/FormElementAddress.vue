@@ -1,26 +1,22 @@
 <template>
   <div class="block">
-    <el-form-item :label="labels.address" label-width="180px">
+    <el-form-item>
       <el-input type="input" :placeholder="labels.address" v-model="address">
       </el-input>
     </el-form-item>
-    <el-form-item :label="labels.address1" label-width="180px">
+    <el-form-item>
       <el-input type="input" :placeholder="labels.address1" v-model="address1">
       </el-input>
     </el-form-item>
     <el-col :span="8">
-      <el-form-item :label="labels.city" label-width="50px">
+      <el-form-item>
         <el-input type="input" :placeholder="labels.city" v-model="city">
         </el-input>
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item :label="labels.state" label-width="50px">
-        <el-select
-          v-model="state"
-          filterable
-          placeholder="Please enter a keyword"
-        >
+      <el-form-item>
+        <el-select v-model="state" filterable :placeholder="labels.state">
           <el-option
             v-for="item in states"
             :key="item.iso2"
@@ -32,7 +28,7 @@
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item :label="labels.zipcode" label-width="100px">
+      <el-form-item>
         <el-input type="input" :placeholder="labels.zipcode" v-model="zipcode">
         </el-input>
       </el-form-item>

@@ -17,6 +17,7 @@
     "vue-lodash": "^2.0.2",
     "vue-router": "^3.0.3",
     "vue-stash": "^2.0.1-beta",
+    "vue2-quill-editor": "^2.0.26",
     "vuedraggable": "^2.20.0"
   },
   "devDependencies": {

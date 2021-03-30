@@ -3,4 +3,5 @@ export default {
   activeForm: [],
   activeTabForFields: "elements",
   showGranzaLogo: true,
+  listId: null,
 };

@@ -1,8 +1,5 @@
 <template>
-  <el-form-item
-    :label="currentField.label"
-    :label-width="currentField.labelWidth + 'px'"
-  >
+  <el-form-item :label="currentField.label">
     <el-input type="text" v-maska="'##/##'" v-model="date"> </el-input>
   </el-form-item>
 </template>

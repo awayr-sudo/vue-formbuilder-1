@@ -50,7 +50,7 @@ import draggable from "vuedraggable";
 
 export default {
   name: "Elements",
-  store: ["forms", "showGranzaLogo"],
+  store: ["forms", "showGranzaLogo", "listId"],
   components: {
     draggable,
   },
@@ -78,6 +78,8 @@ export default {
     },
     clone(field) {
       field.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
+      field.listId = this.listId;
+      console.log("elements", this.listId);
       return _.cloneDeep(field);
     },
     checkStopDragCondition(field) {

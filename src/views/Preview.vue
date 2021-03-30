@@ -29,6 +29,16 @@
               </el-col>
             </div>
           </el-row>
+          <el-row :gutter="20" v-show="showGranzaLogo">
+            <el-col :span="24">
+              <div class="grid-content btn-submit" justify="center">
+                <el-button type="primary" round>Submit</el-button>
+              </div>
+              <div class="grid-content granza-log" justify="center">
+                <img style=" height: 50px" src="@/assets/logo.png" />
+              </div>
+            </el-col>
+          </el-row>
         </el-form>
       </el-main>
     </el-container>
@@ -40,7 +50,7 @@ import { FormBuilder } from "@/components/form_elements/formbuilder";
 
 export default {
   name: "Publish",
-  store: ["forms", "themingVars"],
+  store: ["forms", "themingVars", "showGranzaLogo"],
   components: FormBuilder.$options.components,
   computed: {
     cssProps() {

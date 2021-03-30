@@ -1,6 +1,7 @@
 <template>
   <div class="el-tabs__inner">
     <el-form
+      v-show="activeForm.fieldType != 'Heading'"
       :model="fieldProperties"
       :rules="rules"
       :label-position="labelPosition"
@@ -9,9 +10,12 @@
       <el-row>
         <el-col :span="16">
           <el-form-item
-            label="Label Name"
+            label="Field label"
             v-show="activeForm.hasOwnProperty('label')"
           >
+            <el-input v-show="false" v-model="activeForm.fieldId">{{
+              activeForm.fieldId
+            }}</el-input>
             <el-input v-model="activeForm.label">{{
               activeForm.label
             }}</el-input>
@@ -19,14 +23,19 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="Required field?"
+            label="Required"
             v-show="activeForm.hasOwnProperty('isRequired')"
           >
-            <el-switch v-model="activeForm.isRequired"></el-switch>
+            <el-switch
+              v-model="activeForm.isRequired"
+              :disabled="
+                activeForm.hasOwnProperty('isLocked') && activeForm.isLocked
+              "
+            ></el-switch>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="Merge Tag">
+      <el-form-item label="Merge tag">
         <el-input
           v-model="activeForm.mergeTag"
           :disabled="
@@ -35,18 +44,6 @@
           >{{ activeForm.mergeTag }}</el-input
         >
       </el-form-item>
-      <el-form-item
-        label="Height - px"
-        v-show="
-          activeForm.hasOwnProperty('fieldType') &&
-            activeForm['fieldType'] == 'Carousel'
-        "
-      >
-        <el-input-number
-          v-model="activeForm.controlHeight"
-          controls-position="right"
-        ></el-input-number>
-      </el-form-item>
 
       <!-- Show only when 'isPlacehodlerVisible' key exist -->
       <el-form-item
@@ -54,15 +51,18 @@
         v-show="activeForm.hasOwnProperty('isPlaceholderVisible')"
       >
         <el-row>
-          <el-col :span="5">
-            <el-switch v-model="activeForm.isPlaceholderVisible"></el-switch>
-          </el-col>
-          <el-col :span="19">
-            <el-input
-              v-show="activeForm.isPlaceholderVisible"
-              v-model="activeForm.placeholder"
-            >
+          <el-col :span="24">
+            <el-input v-model="activeForm.placeholder">
               {{ activeForm.placeholder }}
+            </el-input>
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item label="Default value">
+        <el-row>
+          <el-col :span="24">
+            <el-input v-model="activeForm.defaultValue">
+              {{ activeForm.defaultValue }}
             </el-input>
           </el-col>
         </el-row>
@@ -87,18 +87,12 @@
       </el-form-item>
 
       <el-form-item
-        label="Helpblock"
+        label="Help text"
         v-show="activeForm.hasOwnProperty('isHelpBlockVisible')"
       >
         <el-row>
-          <el-col :span="5">
-            <el-switch v-model="activeForm.isHelpBlockVisible"></el-switch>
-          </el-col>
-          <el-col :span="19">
-            <el-input
-              v-show="activeForm.isHelpBlockVisible"
-              v-model="activeForm.helpBlockText"
-            >
+          <el-col :span="24">
+            <el-input v-model="activeForm.helpBlockText">
               {{ activeForm.helpBlockText }}
             </el-input>
           </el-col>
@@ -264,81 +258,95 @@
         </el-button>
       </el-form-item>
 
-      <el-form-item
-        label="Html Content"
-        v-show="activeForm.hasOwnProperty('htmlContent')"
-      >
-        <el-input :rows="10" type="textarea" v-model="activeForm.htmlContent">{{
-          activeForm.htmlContent
-        }}</el-input>
-      </el-form-item>
-
-      <!-- <el-button
-        v-show="activeForm.hasOwnProperty('advancedOptions')"
-        size="mini"
-        @click="advancedPropsVisible = true"
-        style="width: 100%;"
-        type="success"
-      >
-        Advanced Options
-      </el-button>
-      <el-dialog
-        :close-on-click-modal="false"
-        title="Advanced Options"
-        :visible.sync="advancedPropsVisible"
-      >
-        <el-form ref="OptionsForm" :rules="dialogRules">
-          <rating-advanced-props
-            v-if="activeForm.fieldType === 'Rating'"
-          ></rating-advanced-props>
-          <text-input-advanced-props
-            v-if="activeForm.fieldType === 'TextInput'"
-          ></text-input-advanced-props>
-          <html-advanced-props
-            v-if="activeForm.fieldType === 'HtmlComponent'"
-          ></html-advanced-props>
-          <number-input-advanced-props
-            v-if="activeForm.fieldType === 'NumberInput'"
-          ></number-input-advanced-props>
-          <select-list-advanced-props
-            v-if="activeForm.fieldType === 'SelectList'"
-          ></select-list-advanced-props>
-          <options-advanced-props
-            v-if="
-              activeForm.fieldType === 'RadioButton' ||
-                activeForm.fieldType === 'Checkbox'
-            "
-          ></options-advanced-props>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="confirmForm">Confirm</el-button>
-        </div>
-      </el-dialog> -->
+      <el-button type="primary" @click="saveField">Save</el-button>
     </el-form>
+    <!-- <el-button
+      v-show="activeForm.hasOwnProperty('advancedOptions')"
+      size="mini"
+      @click="advancedPropsVisible = true"
+      style="width: 100%;"
+      type="success"
+    >
+      Advanced Options
+    </el-button>
+    <el-dialog
+      :close-on-click-modal="false"
+      title="Advanced Options"
+      :visible.sync="advancedPropsVisible"
+    >
+      <el-form ref="OptionsForm" :rules="dialogRules">
+        <rating-advanced-props
+          v-if="activeForm.fieldType === 'Rating'"
+        ></rating-advanced-props>
+        <text-input-advanced-props
+          v-if="activeForm.fieldType === 'TextInput'"
+        ></text-input-advanced-props>
+        <html-advanced-props
+          v-if="
+            activeForm.fieldType === 'HtmlComponent' ||
+              activeForm.fieldType === 'Heading'
+          "
+        ></html-advanced-props>
+        <number-input-advanced-props
+          v-if="activeForm.fieldType === 'NumberInput'"
+        ></number-input-advanced-props>
+        <select-list-advanced-props
+          v-if="activeForm.fieldType === 'SelectList'"
+        ></select-list-advanced-props>
+        <options-advanced-props
+          v-if="
+            activeForm.fieldType === 'RadioButton' ||
+              activeForm.fieldType === 'Checkbox'
+          "
+        ></options-advanced-props>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirmForm">Confirm</el-button>
+      </div>
+    </el-dialog> -->
+    <el-dialog
+      :close-on-click-modal="false"
+      title="Edit Your Form Title"
+      :visible.sync="headingPropsVisible"
+    >
+      <el-form ref="OptionsForm">
+        <heading-props
+          v-if="activeForm.fieldType === 'Heading'"
+        ></heading-props>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveField()">Save & Close</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import RatingAdvancedProps from "./RatingAdvancedProps";
-import TextInputAdvancedProps from "./TextInputAdvancedProps.vue";
-import HtmlAdvancedProps from "./HtmlAdvancedProps.vue";
-import NumberInputAdvancedProps from "./NumberInputAdvancedProps.vue";
-import OptionsAdvancedProps from "./OptionsAdvancedProps.vue";
-import SelectListAdvancedProps from "./SelectListAdvancedProps.vue";
-
+// import RatingAdvancedProps from "./RatingAdvancedProps";
+// import TextInputAdvancedProps from "./TextInputAdvancedProps.vue";
+// import HtmlAdvancedProps from "./HtmlAdvancedProps.vue";
+// import NumberInputAdvancedProps from "./NumberInputAdvancedProps.vue";
+// import OptionsAdvancedProps from "./OptionsAdvancedProps.vue";
+// import SelectListAdvancedProps from "./SelectListAdvancedProps.vue";
+import { FormBuilder } from "../formbuilder";
+import HeadingProps from "./HeadingProps.vue";
+import axios from "axios";
+import Vue from "vue";
 export default {
   name: "Properties",
   components: {
-    RatingAdvancedProps,
-    TextInputAdvancedProps,
-    HtmlAdvancedProps,
-    NumberInputAdvancedProps,
-    OptionsAdvancedProps,
-    SelectListAdvancedProps,
+    HeadingProps,
+    // RatingAdvancedProps,
+    // TextInputAdvancedProps,
+    // HtmlAdvancedProps,
+    // NumberInputAdvancedProps,
+    // OptionsAdvancedProps,
+    // SelectListAdvancedProps,
   },
-  store: ["activeForm"], // Get the form data from Home
+  store: ["activeForm", "activeTabForFields"], // Get the form data from Home
   data() {
     return {
+      headingPropsVisible: false,
       labelPosition: "top",
       fieldProperties: {},
       rules: {},
@@ -354,6 +362,7 @@ export default {
     console.log("activeform ->", this.activeForm);
     console.log(
       "activeForm.hasOwnProperty('span') ->",
+      Vue.prototype.apiEndpoint,
       this.activeForm.hasOwnProperty("span")
     );
   },
@@ -391,15 +400,27 @@ export default {
         this.$message.error("Column width should be a number!");
       }
     },
-    confirmForm() {
-      this.$refs["OptionsForm"].validate((valid) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    saveField() {
+      console.log(
+        "properties",
+        this.activeForm,
+        localStorage.getItem("user-token")
+      );
+
+      var field = this.activeForm;
+      axios
+        .post(Vue.prototype.apiEndpoint + `save-field`, field)
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          console.log(response);
+          this.headingPropsVisible = false;
+          // this.activeForm = null;
+          this.activeTabForFields = "elements";
+          FormBuilder;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
 };

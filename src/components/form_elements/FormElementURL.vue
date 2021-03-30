@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: "TextInput",
+  name: "URL",
   props: ["currentField"],
   data() {
     return {

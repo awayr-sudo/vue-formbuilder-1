@@ -1,21 +1,26 @@
 <template>
-<el-form-item :label="currentField.label" :label-width="currentField.labelWidth + 'px'">
-  <el-checkbox-group v-model="checkList">
-    <el-checkbox v-for="item in currentField.options" :key="item.optionValue" :label="item.optionLabel" :disabled="item.disabled">
-    </el-checkbox>
-  </el-checkbox-group>
-</el-form-item>
+  <el-form-item :label="currentField.label">
+    <el-checkbox-group v-model="checkList">
+      <el-checkbox
+        v-for="item in currentField.options"
+        :key="item.optionValue"
+        :label="item.optionLabel"
+        :disabled="item.disabled"
+      >
+      </el-checkbox>
+    </el-checkbox-group>
+  </el-form-item>
 </template>
 
 <script>
-import fetchData from '@/api/fetch-data';
+import fetchData from "@/api/fetch-data";
 export default {
-  name: 'Checkbox',
-  props: ['currentField'],
+  name: "Checkbox",
+  props: ["currentField"],
   data() {
     return {
-      checkList: [0]
-    }
+      checkList: [0],
+    };
   },
   mounted() {
     if (this.currentField.isFromUrl) {
@@ -27,8 +32,8 @@ export default {
         this.currentField.options = data;
       });
     }
-  }
-}
+  },
+};
 </script>
 
 <style>

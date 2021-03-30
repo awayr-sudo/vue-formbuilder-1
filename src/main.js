@@ -29,16 +29,27 @@ import VueStash from "vue-stash";
 import store from "./store";
 import Maska from "maska";
 
+// Now you register `'el-tiptap'` component globally.
 Vue.use(VueStash);
 Vue.use(Maska);
 
 Vue.config.productionTip = false;
+Vue.prototype.apiEndpoint = null;
 
 var vm = new Vue({
   el: "#app",
   router,
-  data: { store },
+  data: { store, message: "Hello Vue!" },
   render: (h) => h(App),
 }).$mount("#app");
-
+var myVar = {
+  get a() {
+    console.log("msg", vm.message);
+    return vm.message;
+  },
+  set a(b) {
+    vm.message = b;
+    console.log("msg b", b);
+  },
+};
 export default vm;
