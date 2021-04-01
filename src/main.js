@@ -4,7 +4,9 @@ import Vue from "vue";
 // Use Element UI
 // ----------------
 import Element from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+// import "element-ui/lib/theme-chalk/index.css";
+import "../theme/index.css";
+
 import locale from "element-ui/lib/locale/lang/en"; // Default lang is Chinese
 Vue.use(Element, { locale });
 import "./assets/scss/main.scss";
@@ -42,14 +44,5 @@ var vm = new Vue({
   data: { store, message: "Hello Vue!" },
   render: (h) => h(App),
 }).$mount("#app");
-var myVar = {
-  get a() {
-    console.log("msg", vm.message);
-    return vm.message;
-  },
-  set a(b) {
-    vm.message = b;
-    console.log("msg b", b);
-  },
-};
+
 export default vm;

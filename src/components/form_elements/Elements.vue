@@ -15,7 +15,8 @@
           :key="index"
         >
           <el-button class="button__sidebar">
-            {{ field.text }}
+            <i class="pixicon pixicon-video-fullscreen"></i>
+            <span>{{ field.text }}</span>
           </el-button>
         </el-col>
       </draggable>
@@ -32,8 +33,7 @@
           <el-switch
             style="display: block"
             v-model="showGranzaLogo"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
+            active-color="#51A461"
             active-text="Show the Granza logo at the bottom of your form."
             @change="handleGranzaLogo"
           >

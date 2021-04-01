@@ -2,15 +2,79 @@
   <div v-loading="loading">
     <el-container>
       <el-main>
+        {{ activeForm }} - {{ activeTabForFields }}
         <div class="wrapper--forms">
           <el-form ref="ruleForm">
-            <el-input
-              v-show="false"
-              id="appPoint"
-              v-model="appPoint"
-            ></el-input>
-            <el-input v-show="false" id="listId" v-model="listId"></el-input>
+            <el-input v-show="true" id="appPoint" v-model="appPoint"></el-input>
+            <el-input v-show="true" id="listId" v-model="listId"></el-input>
+            <el-row>
+              <el-col
+                v-for="(form, index) in headings"
+                :key="index"
+                v-bind="form"
+                :span="form.span"
+                class="form__group"
+                :class="{ 'is--active': form === activeForm }"
+              >
+                <span class="form__selectedlabel">{{
+                  form.fieldType == "Heading" ? form.fieldType : "Form Title"
+                }}</span>
 
+                <div @click="editElementProperties(form)">
+                  <!-- <label class="form__label" v-model="form.label" v-show="form.hasOwnProperty('label')">{{ form.label }}</label> -->
+
+                  <component
+                    :is="form.fieldType"
+                    :currentField="form"
+                    class="form__field"
+                  >
+                  </component>
+                  <small
+                    class="form__helpblock"
+                    v-show="form.isHelpBlockVisible"
+                    >{{ form.helpBlockText }}
+                  </small>
+                </div>
+
+                <!-- Actions list -->
+                <div class="form__actiongroup">
+                  <el-button
+                    circle
+                    size="mini"
+                    icon="el-icon-rank"
+                    class="form__actionitem--move"
+                    v-show="form.fieldType != 'Heading'"
+                  ></el-button>
+                  <el-button
+                    v-show="form.fieldType == 'Heading'"
+                    type="primary"
+                    class="form__actionitem--edit"
+                    round
+                    size="mini"
+                    @click="
+                      editElementProperties(form);
+                      headingPropsVisible = true;
+                    "
+                    >Edit</el-button
+                  >
+
+                  <el-button-group class="form__actionlist">
+                    <el-button
+                      size="mini"
+                      icon="el-icon-plus"
+                      @click="cloneElement(index, form)"
+                      v-show="!form.isUnique || !form.isLocked"
+                    ></el-button>
+                    <el-button
+                      size="mini"
+                      icon="el-icon-delete"
+                      @click="deleteElement(index)"
+                      v-show="!form.isLocked"
+                    ></el-button>
+                  </el-button-group>
+                </div>
+              </el-col>
+            </el-row>
             <el-row>
               <draggable
                 :list="forms"
@@ -22,7 +86,7 @@
                 <!-- The form elements starts (on the right) -->
                 <!-- <div> -->
                 <el-col
-                  v-for="(form, index) in forms"
+                  v-for="(form, index) in elements"
                   :key="index"
                   v-bind="form"
                   :span="form.span"
@@ -95,12 +159,12 @@
                 <div class="grid-content btn-submit" justify="center">
                   <el-button type="primary" round>Submit</el-button>
                 </div>
-                <div class="grid-content granza-log" justify="center">
-                  <img style=" height: 50px" src="@/assets/logo.png" />
-                </div>
               </el-col>
             </el-row>
           </el-form>
+          <div class="grid-content granza-log" justify="center">
+            <img style=" height: 50px" src="@/assets/logo.png" />
+          </div>
         </div>
       </el-main>
 
@@ -178,8 +242,25 @@ export default {
     this.forms = [];
   },
   components: { ...FormBuilder.$options.components, HeadingProps },
-
+  computed: {
+    headings() {
+      return this.forms.filter(function(form) {
+        return form.fieldType == "Heading";
+      });
+    },
+    elements() {
+      return this.forms.filter(function(form) {
+        return form.fieldType != "Heading";
+      });
+    },
+  },
   watch: {
+    activeTabForFields: function(val) {
+      console.log("elel", val);
+      if (val == "elements") {
+        this.activeForm = [];
+      }
+    },
     appPoint: function(val) {
       Vue.prototype.apiEndpoint = val;
     },
