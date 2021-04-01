@@ -4,8 +4,12 @@
       <el-main>
         <div class="wrapper--forms">
           <el-form ref="ruleForm">
-            <el-input v-show="true" id="appPoint" v-model="appPoint"></el-input>
-            <el-input v-show="true" id="listId" v-model="listId"></el-input>
+            <el-input
+              v-show="false"
+              id="appPoint"
+              v-model="appPoint"
+            ></el-input>
+            <el-input v-show="false" id="listId" v-model="listId"></el-input>
             <el-row>
               <el-col
                 v-for="(form, index) in headings"
