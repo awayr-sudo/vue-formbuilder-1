@@ -2,7 +2,6 @@
   <div v-loading="loading">
     <el-container>
       <el-main>
-        {{ activeForm }} - {{ activeTabForFields }}
         <div class="wrapper--forms">
           <el-form ref="ruleForm">
             <el-input v-show="true" id="appPoint" v-model="appPoint"></el-input>
