@@ -359,12 +359,12 @@ export default {
     };
   },
   mounted() {
-    console.log("activeform ->", this.activeForm);
-    console.log(
-      "activeForm.hasOwnProperty('span') ->",
-      Vue.prototype.apiEndpoint,
-      this.activeForm.hasOwnProperty("span")
-    );
+    // console.log("activeform ->", this.activeForm);
+    // console.log(
+    //   "activeForm.hasOwnProperty('span') ->",
+    //   Vue.prototype.apiEndpoint,
+    //   this.activeForm.hasOwnProperty("span")
+    // );
   },
   methods: {
     deleteOption(option, index) {
@@ -412,11 +412,9 @@ export default {
         .post(Vue.prototype.apiEndpoint + `save-field`, field)
         .then((response) => {
           // JSON responses are automatically parsed.
-          console.log(response);
           this.headingPropsVisible = false;
           // this.activeForm = null;
           this.activeTabForFields = "elements";
-          FormBuilder;
         })
         .catch((e) => {
           console.log(e);

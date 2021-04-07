@@ -15,7 +15,7 @@
           :key="index"
         >
           <el-button class="button__sidebar">
-            <i class="pixicon pixicon-video-fullscreen"></i>
+            <i class="pixicon" :class="field.className"></i>
             <span>{{ field.text }}</span>
           </el-button>
         </el-col>
@@ -67,11 +67,9 @@ export default {
           "The Granza logo is an important feature of Granza’s viral networking technology. It is one of several key ways your business will expand automatically. Are you sure? "
         )
           .then((_) => {
-            console.log(done, "_", _);
             this.showGranzaLogo = done;
           })
           .catch((_) => {
-            console.log(done, "!_", _);
             this.showGranzaLogo = !done;
           });
       }
@@ -79,7 +77,6 @@ export default {
     clone(field) {
       field.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
       field.listId = this.listId;
-      console.log("elements", this.listId);
       return _.cloneDeep(field);
     },
     checkStopDragCondition(field) {

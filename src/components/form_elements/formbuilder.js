@@ -68,6 +68,7 @@ export const FormBuilder = new Vue({
           text: "Text",
           group: "form", //form group
           isRequired: false,
+          className: "pixicon-text",
           isHelpBlockVisible: false,
           isPlaceholderVisible: true,
           isUnique: false,
@@ -87,6 +88,7 @@ export const FormBuilder = new Vue({
           label: "Long Text",
           text: "Long Text",
           group: "form",
+          className: "pixicon-long-text",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: true,
@@ -99,6 +101,7 @@ export const FormBuilder = new Vue({
           label: "Number",
           text: "Number",
           group: "form",
+          className: "pixicon-number",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
@@ -119,6 +122,7 @@ export const FormBuilder = new Vue({
           label: "Select",
           text: "Select",
           group: "form",
+          className: "pixicon-select",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
@@ -151,6 +155,7 @@ export const FormBuilder = new Vue({
           label: "Radio",
           text: "Radio",
           group: "form",
+          className: "pixicon-radio-button",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
@@ -177,6 +182,7 @@ export const FormBuilder = new Vue({
           label: "Checkbox",
           text: "Checkbox",
           group: "form",
+          className: "pixicon-check-box",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
@@ -207,12 +213,14 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
+          className: " pixicon-calendar",
         },
         {
           fieldType: "Birthday",
           label: "Birthday",
           text: "Birthday",
           group: "form",
+          className: "pixicon-birthday-button",
           isRequired: false,
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
@@ -229,6 +237,7 @@ export const FormBuilder = new Vue({
           isUnique: false,
           span: 24,
           labelWidth: 100,
+          className: "pixicon-address",
         },
         {
           fieldType: "Zipcode",
@@ -245,6 +254,7 @@ export const FormBuilder = new Vue({
           min: 1,
           hasMaxValue: false,
           max: 5,
+          className: "pixicon-zipcode-button",
         },
         {
           fieldType: "Phone",
@@ -255,6 +265,7 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
+          className: "pixicon-phone",
         },
         {
           fieldType: "URL",
@@ -265,6 +276,7 @@ export const FormBuilder = new Vue({
           isHelpBlockVisible: false,
           isPlaceholderVisible: false,
           isUnique: false,
+          className: "pixicon-url",
         },
       ],
 
@@ -296,7 +308,6 @@ export const FormBuilder = new Vue({
     },
 
     cloneElement(index, form) {
-      console.log("gooooood", form);
       var cloned = _.cloneDeep(form); // clone deep lodash
       vm.$store.forms.splice(index, 0, cloned);
     },

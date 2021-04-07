@@ -2,6 +2,7 @@
   <el-form-item
     :label="currentField.label"
     :label-width="currentField.labelWidth + 'px'"
+    :required="this.currentField.isRequired"
   >
     <el-input-number
       v-model="number"

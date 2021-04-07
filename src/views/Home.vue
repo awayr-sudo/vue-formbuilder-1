@@ -10,7 +10,7 @@
               v-model="appPoint"
             ></el-input>
             <el-input v-show="false" id="listId" v-model="listId"></el-input>
-            <el-row>
+            <el-row class="heading">
               <el-col
                 v-for="(form, index) in headings"
                 :key="index"
@@ -78,7 +78,7 @@
                 </div>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row class="main-area">
               <draggable
                 :list="forms"
                 class="dragArea"
@@ -156,8 +156,6 @@
                 </el-col>
                 <!-- </div> -->
               </draggable>
-            </el-row>
-            <el-row :gutter="20" v-show="showGranzaLogo">
               <el-col :span="24">
                 <div class="grid-content btn-submit" justify="center">
                   <el-button type="primary" round>Submit</el-button>
@@ -165,9 +163,13 @@
               </el-col>
             </el-row>
           </el-form>
-          <div class="grid-content granza-log" justify="center">
-            <img style=" height: 50px" src="@/assets/logo.png" />
-          </div>
+          <el-row :gutter="20" v-show="showGranzaLogo">
+            <el-col :span="24">
+              <div class="grid-content granza-log" justify="center">
+                <img style=" height: 50px" src="@/assets/logo.png" />
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </el-main>
 
@@ -238,9 +240,9 @@ export default {
     };
   },
   mounted() {
-    console.log("form ->", this.forms);
-    console.log("activeform ->", this.activeForm);
-    console.log("my children", this.$);
+    // console.log("form ->", this.forms);
+    // console.log("activeform ->", this.activeForm);
+    // console.log("my children", this.$);
 
     this.forms = [];
   },
@@ -259,7 +261,6 @@ export default {
   },
   watch: {
     activeTabForFields: function(val) {
-      console.log("elel", val);
       if (val == "elements") {
         this.activeForm = [];
       }
@@ -276,7 +277,6 @@ export default {
         .then((data) => {
           // JSON responses are automatically parsed.
           var info = JSON.parse(JSON.stringify(data));
-          console.log("forms", info.data);
           this.forms = info.data;
           this.loading = false;
           // this.forms = [];
@@ -286,8 +286,8 @@ export default {
           // this.forms = JSON.stringify(data);
         })
         .catch((e) => {
-          console.log(e);
           this.loading = false;
+          console.log("error", e);
         });
     },
     forms: {
@@ -296,7 +296,6 @@ export default {
         var grouped = _.groupBy(elems, function(elem) {
           return elem.isLocked ? "locked" : "unlocked";
         });
-        console.log(grouped);
         // acting on grouped data if any unlocked item available...
         if (grouped.hasOwnProperty("unlocked")) {
           grouped.locked.forEach((item) => {
@@ -352,7 +351,7 @@ export default {
     },
     cloneElement(index, form) {
       form.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
-      console.log("good g", form);
+
       FormBuilder.cloneElement(index, form);
     },
     editElementProperties(form) {

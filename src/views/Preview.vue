@@ -3,10 +3,34 @@
     <el-container>
       <el-main :style="cssProps">
         <el-form>
+          <el-row class="heading">
+            <el-col
+              v-for="(form, index) in headings"
+              :key="index"
+              :span="form.span"
+              v-bind="form"
+              class="form__group"
+            >
+              <!-- <label class="form__label" v-model="form.label" v-show="form.hasOwnProperty('label')">{{ form.label }}</label> -->
+              <component
+                :is="form.fieldType"
+                :currentField="form"
+                class="form__field"
+              >
+              </component>
+              <small
+                class="form__helpblock"
+                v-model="form.helpBlockText"
+                v-show="form.isHelpBlockVisible"
+              >
+                {{ form.helpBlockText }}
+              </small>
+            </el-col>
+          </el-row>
           <el-row>
             <div class="wrapper--forms">
               <el-col
-                v-for="(form, index) in forms"
+                v-for="(form, index) in elements"
                 :key="index"
                 :span="form.span"
                 v-bind="form"
@@ -53,6 +77,16 @@ export default {
   store: ["forms", "themingVars", "showGranzaLogo"],
   components: FormBuilder.$options.components,
   computed: {
+    headings() {
+      return this.forms.filter(function(form) {
+        return form.fieldType == "Heading";
+      });
+    },
+    elements() {
+      return this.forms.filter(function(form) {
+        return form.fieldType != "Heading";
+      });
+    },
     cssProps() {
       // Return an object that will generate css properties key
       // to match with the themingVars

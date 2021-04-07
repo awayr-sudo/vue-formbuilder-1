@@ -1,5 +1,8 @@
 <template>
-  <el-form-item :label="currentField.label">
+  <el-form-item
+    :label="currentField.label"
+    :required="this.currentField.isRequired"
+  >
     <el-input
       type="text"
       v-maska="['(###) ##-##-##', '(###) ###-####']"
