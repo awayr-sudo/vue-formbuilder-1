@@ -1,6 +1,6 @@
 <template>
   <div class="block">
-    <el-form-item>
+    <el-form-item label="Address">
       <el-input type="input" :placeholder="labels.address" v-model="address">
       </el-input>
     </el-form-item>

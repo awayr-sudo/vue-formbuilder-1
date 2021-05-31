@@ -71,7 +71,7 @@
                     <el-button
                       size="mini"
                       icon="el-icon-delete"
-                      @click="deleteElement(index)"
+                      @click="deleteElement(index, form)"
                       v-show="!form.isLocked"
                     ></el-button>
                   </el-button-group>
@@ -83,18 +83,20 @@
                 :list="forms"
                 class="dragArea"
                 :group="{ name: 'formbuilder', pull: false, put: true }"
-                :sort="true"
+                :options="sortElementOptions"
                 ghost-class="sortable__ghost"
+                @sort="checkMove"
               >
                 <!-- The form elements starts (on the right) -->
                 <!-- <div> -->
                 <el-col
-                  v-for="(form, index) in elements"
+                  v-for="(form, index) in forms"
                   :key="index"
                   v-bind="form"
                   :span="form.span"
                   class="form__group"
                   :class="{ 'is--active': form === activeForm }"
+                  v-if="'Heading' != form.fieldType"
                 >
                   <span class="form__selectedlabel">{{
                     form.fieldType != "Heading" ? form.fieldType : "Form Title"
@@ -145,12 +147,19 @@
                         @click="cloneElement(index, form)"
                         v-show="!form.isUnique || !form.isLocked"
                       ></el-button>
-                      <el-button
-                        size="mini"
-                        icon="el-icon-delete"
-                        @click="deleteElement(index)"
-                        v-show="!form.isLocked"
-                      ></el-button>
+
+                      <el-popconfirm
+                        title="Are you sure to delete this?"
+                        @confirm="deleteElement(index, form)"
+                      >
+                        <template #reference>
+                          <el-button
+                            size="mini"
+                            icon="el-icon-delete"
+                            v-show="!form.isLocked"
+                          ></el-button>
+                        </template>
+                      </el-popconfirm>
                     </el-button-group>
                   </div>
                 </el-col>
@@ -166,7 +175,7 @@
           <el-row :gutter="20" v-show="showGranzaLogo">
             <el-col :span="24">
               <div class="grid-content granza-log" justify="center">
-                <img style=" height: 50px" src="@/assets/logo.png" />
+                <img style=" height: 50px" src="/images/logo.png" />
               </div>
             </el-col>
           </el-row>
@@ -237,6 +246,7 @@ export default {
       sortElementOptions: FormBuilder.$data.sortElementOptions,
       headingPropsVisible: false,
       appPoint: "",
+      dontUpdate: true,
     };
   },
   mounted() {
@@ -250,11 +260,13 @@ export default {
   computed: {
     headings() {
       return this.forms.filter(function(form) {
+        console.log("touched");
         return form.fieldType == "Heading";
       });
     },
     elements() {
       return this.forms.filter(function(form) {
+        console.log("toccc");
         return form.fieldType != "Heading";
       });
     },
@@ -263,6 +275,33 @@ export default {
     activeTabForFields: function(val) {
       if (val == "elements") {
         this.activeForm = [];
+      }
+    },
+    showGranzaLogo: function(val, old) {
+      if (Vue.prototype.apiEndpoint == "") return;
+      console.log("what should i do", val, old);
+      if ("undefined" != typeof val && !this.dontUpdate) {
+        this.loading = true;
+
+        axios
+          .get(Vue.prototype.apiEndpoint + `show-logo`, {
+            params: {
+              show: val ? 1 : 0,
+              listId: this.listId,
+            },
+          })
+          .then((response) => {
+            console.log(
+              "status",
+              response.data.shown,
+              "1" == response.data.shown
+            );
+            this.showGranzaLogo = "1" == response.data.shown;
+            this.loading = false;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       }
     },
     appPoint: function(val) {
@@ -277,7 +316,12 @@ export default {
         .then((data) => {
           // JSON responses are automatically parsed.
           var info = JSON.parse(JSON.stringify(data));
-          this.forms = info.data;
+          this.forms = info.data.fields;
+          this.showGranzaLogo = "1" == info.data.item.show_granza_logo;
+
+          setTimeout(() => {
+            this.dontUpdate = false;
+          }, 1000);
           this.loading = false;
           // this.forms = [];
           // info.data.forEach((item) => {
@@ -338,6 +382,31 @@ export default {
     },
   },
   methods: {
+    checkMove: function(e) {
+      this.loading = true;
+      let fields = [];
+      this.forms.forEach((item, index) => {
+        item.position = index;
+        fields[index] = item.fieldId;
+      });
+
+      if (this.listId != null) {
+        axios
+          .post(Vue.prototype.apiEndpoint + `update-order`, {
+            params: {
+              listId: this.listId,
+              fields: fields,
+            },
+          })
+          .then(() => {
+            this.loading = false;
+          })
+          .catch((e) => {
+            console.log(e);
+            this.loading = false;
+          });
+      }
+    },
     warn(msg) {
       this.$notify({
         title: "Warning",
@@ -346,10 +415,38 @@ export default {
         duration: 0,
       });
     },
-    deleteElement(index) {
-      FormBuilder.deleteElement(index);
+    deleteElement(index, form) {
+      // index += this.headings.length;
+      console.log("my form", form.listId, form.mergeTag);
+      console.log("my form field", form.listId);
+      if (form.fieldId != null) {
+        axios
+          .get(Vue.prototype.apiEndpoint + `delete-field`, {
+            params: {
+              listId: form.listId,
+              mergeTag: form.mergeTag,
+            },
+          })
+          .then((response) => {
+            if (response.data.isDeleted) {
+              // JSON responses are automatically parsed.
+              this.headingPropsVisible = false;
+              // this.activeForm = null;
+              this.activeTabForFields = "elements";
+              FormBuilder.deleteElement(index);
+            }
+            console.log(response, index);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        FormBuilder.deleteElement(index);
+      }
+      // FormBuilder.deleteElement(index);
     },
     cloneElement(index, form) {
+      index += this.headings.length;
       form.mergeTag = "MMERGE" + Math.floor(Math.random() * 1000) + 1;
 
       FormBuilder.cloneElement(index, form);

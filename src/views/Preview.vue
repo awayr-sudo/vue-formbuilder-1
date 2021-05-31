@@ -18,16 +18,12 @@
                 class="form__field"
               >
               </component>
-              <small
-                class="form__helpblock"
-                v-model="form.helpBlockText"
-                v-show="form.isHelpBlockVisible"
-              >
+              <small class="form__helpblock" v-show="form.isHelpBlockVisible">
                 {{ form.helpBlockText }}
               </small>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row class="main-area">
             <div class="wrapper--forms">
               <el-col
                 v-for="(form, index) in elements"
@@ -43,23 +39,21 @@
                   class="form__field"
                 >
                 </component>
-                <small
-                  class="form__helpblock"
-                  v-model="form.helpBlockText"
-                  v-show="form.isHelpBlockVisible"
-                >
+                <small class="form__helpblock" v-show="form.isHelpBlockVisible">
                   {{ form.helpBlockText }}
                 </small>
+              </el-col>
+              <el-col :span="24">
+                <div class="grid-content btn-submit" justify="center">
+                  <el-button type="primary" round>Submit</el-button>
+                </div>
               </el-col>
             </div>
           </el-row>
           <el-row :gutter="20" v-show="showGranzaLogo">
             <el-col :span="24">
-              <div class="grid-content btn-submit" justify="center">
-                <el-button type="primary" round>Submit</el-button>
-              </div>
               <div class="grid-content granza-log" justify="center">
-                <img style=" height: 50px" src="@/assets/logo.png" />
+                <img style=" height: 50px" src="/images/logo.png" />
               </div>
             </el-col>
           </el-row>
