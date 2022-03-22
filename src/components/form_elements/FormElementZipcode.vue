@@ -9,6 +9,7 @@
       v-model="number"
       maxlength="5"
       show-word-limit
+      v-bind="attributesBinding"
     >
     </el-input>
   </el-form-item>
@@ -20,8 +21,15 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      number: "",
+      number: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.radio = this.currentField.defaultValue;
+    },
   },
   computed: {
     attributesBinding() {
@@ -34,6 +42,9 @@ export default {
       }
       if (this.currentField.hasMaxValue) {
         attr.max = this.currentField.max;
+      }
+      if (this.currentField.isPlaceholderVisible) {
+        attr.placeholder = this.currentField.placeholder;
       }
       return attr;
     },

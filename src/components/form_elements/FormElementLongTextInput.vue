@@ -19,8 +19,15 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      textarea: "",
+      textarea: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.textarea = this.currentField.defaultValue;
+    },
   },
 };
 </script>

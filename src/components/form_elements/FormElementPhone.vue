@@ -7,6 +7,7 @@
       type="text"
       v-maska="['(###) ##-##-##', '(###) ###-####']"
       v-model="phone"
+      v-bind="attributesBinding"
     >
     </el-input>
   </el-form-item>
@@ -20,8 +21,26 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      phone: "",
+      phone: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.phone = this.currentField.defaultValue;
+    },
+  },
+  computed: {
+    attributesBinding() {
+      var attr = {};
+
+      if (this.currentField.isPlaceholderVisible) {
+        attr.placeholder = this.currentField.placeholder;
+      }
+
+      return attr;
+    },
   },
 };
 </script>

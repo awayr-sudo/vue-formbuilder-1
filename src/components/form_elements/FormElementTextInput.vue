@@ -3,7 +3,8 @@
     :label="currentField.label"
     :required="this.currentField.isRequired"
   >
-    <el-input v-model="input" v-bind="attributesBinding"> </el-input>
+    <el-input v-model="input" v-bind="attributesBinding" value="danish">
+    </el-input>
   </el-form-item>
 </template>
 
@@ -13,8 +14,15 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      input: "",
+      input: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.input = this.currentField.defaultValue;
+    },
   },
   computed: {
     attributesBinding() {

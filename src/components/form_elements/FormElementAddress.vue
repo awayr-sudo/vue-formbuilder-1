@@ -1,6 +1,6 @@
 <template>
   <div class="block">
-    <el-form-item label="Address">
+    <el-form-item label="Address" :required="this.currentField.isRequired">
       <el-input type="input" :placeholder="labels.address" v-model="address">
       </el-input>
     </el-form-item>

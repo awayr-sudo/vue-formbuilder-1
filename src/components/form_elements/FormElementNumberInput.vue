@@ -19,8 +19,15 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      number: 0,
+      number: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : 0,
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.number = this.currentField.defaultValue;
+    },
   },
   computed: {
     attributesBinding() {

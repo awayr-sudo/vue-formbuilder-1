@@ -7,34 +7,31 @@
       <el-checkbox
         v-for="item in currentField.options"
         :key="item.optionValue"
-        :label="item.optionLabel"
+        :label="item.optionValue"
         :disabled="item.disabled"
-      >
+        >{{ item.optionLabel }}
       </el-checkbox>
     </el-checkbox-group>
   </el-form-item>
 </template>
 
 <script>
-import fetchData from "@/api/fetch-data";
 export default {
   name: "Checkbox",
   props: ["currentField"],
   data() {
     return {
-      checkList: [0],
+      checkList: [1],
     };
   },
-  mounted() {
-    if (this.currentField.isFromUrl) {
-      let dataUrl = this.currentField.dataUrl;
-      let valueField = this.currentField.valueField;
-      let labelField = this.currentField.labelField;
-      let promise = fetchData.fetchOptionsData(dataUrl, labelField, valueField);
-      promise.then((data) => {
-        this.currentField.options = data;
-      });
-    }
+  watch: {
+    "currentField.defaultValue"() {
+      this.checkList = this.currentField.defaultValue
+        .split(",")
+        .map(function(item) {
+          return item.trim();
+        });
+    },
   },
 };
 </script>

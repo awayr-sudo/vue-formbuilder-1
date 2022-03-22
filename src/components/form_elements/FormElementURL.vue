@@ -13,8 +13,15 @@ export default {
   props: ["currentField"],
   data() {
     return {
-      input: "",
+      input: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
     };
+  },
+  watch: {
+    "currentField.defaultValue"() {
+      this.input = this.currentField.defaultValue;
+    },
   },
   computed: {
     attributesBinding() {

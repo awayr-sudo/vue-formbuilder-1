@@ -9,6 +9,11 @@
               id="appPoint"
               v-model="appPoint"
             ></el-input>
+            <el-input
+              v-show="false"
+              id="isFreeUser"
+              v-model="isFreeUser"
+            ></el-input>
             <el-input v-show="false" id="listId" v-model="listId"></el-input>
             <el-row class="heading">
               <el-col
@@ -239,6 +244,7 @@ export default {
     "activeTabForFields",
     "showGranzaLogo",
     "listId",
+    "isFreeUser"
   ],
   data() {
     return {
@@ -479,6 +485,33 @@ export default {
   min-height: 10px;
   height: calc(60vh);
   z-index: 2;
+}
+// Display this ghost in <main> only
+.sortable__ghost {
+  position: relative;
+  width: 33.33%;
+  border-bottom: 2px solid #3a8ee6;
+  margin-top: 2px;
+  margin-bottom: 2px;
+
+  [type="button"],
+  div,
+  span {
+    display: none;
+  }
+  &:before {
+    content: "Drag it here";
+    background-color: #ecf5ff;
+    color: #3a8ee6;
+    position: absolute;
+    left: 50%;
+    font-size: 10px;
+    border-radius: 10px;
+    line-height: 15px;
+    padding: 0 10px;
+    top: -6px;
+    transform: translateX(-50%);
+  }
 }
 
 .form__selectedlabel {

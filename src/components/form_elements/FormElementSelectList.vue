@@ -33,7 +33,9 @@ export default {
   data() {
     return {
       update: true,
-      value: "",
+      value: this.currentField.defaultValue
+        ? this.currentField.defaultValue
+        : "",
       loading: false,
     };
   },
@@ -93,6 +95,9 @@ export default {
     },
   },
   watch: {
+    "currentField.defaultValue"() {
+      this.value = this.currentField.defaultValue;
+    },
     "currentField.multiple"() {
       this.reload();
     },

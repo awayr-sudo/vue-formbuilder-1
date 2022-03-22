@@ -31,7 +31,7 @@
       >
         <el-col :span="24">
           <el-switch
-            style="display: block"
+            :disabled="isFreeUser == '1'"
             v-model="showGranzaLogo"
             active-color="#51A461"
             active-text="Show the Granza logo at the bottom of your form."
@@ -50,7 +50,7 @@ import draggable from "vuedraggable";
 
 export default {
   name: "Elements",
-  store: ["forms", "showGranzaLogo", "listId"],
+  store: ["forms", "showGranzaLogo", "listId", "isFreeUser"],
   components: {
     draggable,
   },
@@ -98,7 +98,11 @@ export default {
 .button__sidebar {
   width: 100%;
   margin-bottom: 5px;
-
+  padding: 0;
+  span {
+    padding: 13px 21px;
+    display: block;
+  }
   .is-disabled & {
     opacity: 0.4;
   }

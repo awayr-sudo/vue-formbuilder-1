@@ -4,4 +4,5 @@ export default {
   activeTabForFields: "elements",
   showGranzaLogo: true,
   listId: null,
+  isFreeUser: 1,
 };

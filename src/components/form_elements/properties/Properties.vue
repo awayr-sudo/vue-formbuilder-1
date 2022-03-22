@@ -48,7 +48,10 @@
       <!-- Show only when 'isPlacehodlerVisible' key exist -->
       <el-form-item
         label="Placeholder"
-        v-show="activeForm.hasOwnProperty('isPlaceholderVisible')"
+        v-show="
+          activeForm.hasOwnProperty('isPlaceholderVisible') &&
+            activeForm['isPlaceholderVisible'] == true
+        "
       >
         <el-row>
           <el-col :span="24">
@@ -58,7 +61,10 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="Default value">
+      <el-form-item
+        label="Default value"
+        v-show="activeForm.fieldType != 'Address'"
+      >
         <el-row>
           <el-col :span="24">
             <el-input v-model="activeForm.defaultValue">
@@ -305,6 +311,7 @@
       </div>
     </el-dialog> -->
     <el-dialog
+      @close="activeTabForFields = 'elements'"
       :close-on-click-modal="false"
       title="Edit Your Form Title"
       :visible.sync="headingPropsVisible"
@@ -413,11 +420,13 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.headingPropsVisible = false;
-          // this.activeForm = null;
+
+          this.activeForm.fieldId = response.data.fieldId;
+          console.log(this.activeForm);
           this.activeTabForFields = "elements";
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
         });
     },
   },
